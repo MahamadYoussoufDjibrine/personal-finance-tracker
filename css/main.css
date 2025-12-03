@@ -1,0 +1,688 @@
+/* css/main.css */
+
+/* --- 1. Global Resets and Variables --- */
+:root {
+    --color-primary: #19C37D; /* Green */
+    --color-text-dark: #333;
+    --color-text-light: #666;
+    --color-background: #f8f9fa; /* Light Background */
+    --color-white: #fff;
+    --color-border: #ddd;
+    --color-input-bg: #f4f6f8;
+    --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: var(--color-background);
+    color: var(--color-text-dark);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* --- 2. Auth Page Layout (Login/Signup) --- */
+.auth-container {
+    display: flex;
+    max-width: 1200px;
+    width: 90%;
+    margin: 40px auto;
+    background-color: var(--color-white);
+    border-radius: 12px;
+    box-shadow: var(--shadow-light);
+    overflow: hidden;
+}
+
+/* Left Pitch Section */
+.auth-pitch {
+    flex: 1;
+    padding: 40px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: linear-gradient(145deg, var(--color-background) 0%, var(--color-white) 100%);
+}
+
+.logo-area {
+    margin-bottom: 20px;
+}
+
+.logo-icon {
+    /* Mimics the green growth chart icon in the UI */
+    width: 60px;
+    height: 60px;
+    background-color: #E6F6F0; /* Lighter shade of primary */
+    border-radius: 12px;
+    position: relative;
+}
+
+.logo-icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30px;
+    background: url('data:image/svg+xml;charset=utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2319C37D"%3E%3Cpath d="M5 21v-4a1 1 0 011-1h12a1 1 0 011 1v4h-2v-4H7v4H5zm14-11V6a1 1 0 00-1-1h-2a1 1 0 00-1 1v4h-2V7a1 1 0 00-1-1H9a1 1 0 00-1 1v7H6V9a1 1 0 00-1-1H3a1 1 0 00-1 1v12h18v-7h-2z"%3E%3C/path%3E%3C/svg%3E') no-repeat center;
+    background-size: contain;
+}
+
+.auth-pitch h1 {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.auth-pitch p {
+    color: var(--color-text-light);
+    margin-bottom: 20px;
+}
+
+.auth-pitch ul {
+    list-style: none;
+}
+
+.auth-pitch ul li {
+    color: var(--color-text-light);
+    margin-bottom: 8px;
+    padding-left: 20px;
+    position: relative;
+    font-size: 0.95em;
+}
+
+.auth-pitch ul li::before {
+    content: '•'; /* Green bullet point */
+    color: var(--color-primary);
+    font-size: 1.5em;
+    line-height: 0;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Right Form Section */
+.auth-form-area {
+    flex: 1;
+    max-width: 450px;
+    padding: 60px 40px;
+    border-left: 1px solid var(--color-border);
+}
+
+.auth-tabs {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 40px;
+    background-color: var(--color-input-bg);
+    border-radius: 8px;
+    padding: 4px;
+}
+
+.tab-button {
+    padding: 10px 20px;
+    text-decoration: none;
+    color: var(--color-text-dark);
+    font-weight: 600;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+.tab-button.active {
+    background-color: var(--color-white);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Elements */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    color: var(--color-text-light);
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background-color: var(--color-input-bg);
+    font-size: 1em;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-group input:focus {
+    border-color: var(--color-primary);
+    background-color: var(--color-white);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(25, 195, 125, 0.1);
+}
+
+.input-group .password-note {
+    font-size: 0.75em;
+    color: var(--color-text-light);
+    margin-top: 5px;
+}
+
+/* Button */
+.btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 700;
+    transition: background-color 0.2s, opacity 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+
+.btn-primary:hover {
+    background-color: #15a065; /* Darker green */
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Terms Note */
+.terms-note {
+    font-size: 0.8em;
+    color: var(--color-text-light);
+    text-align: center;
+    margin-top: 20px;
+}
+
+.terms-note a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* --- 3. Utility Styles/Alerts (For JS feedback) --- */
+.alert {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    font-size: 0.9em;
+}
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+/* css/main.css (Append the following) */
+
+/* --- 5. Dashboard Layout --- */
+
+.app-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    /* Override body centering for app view */
+    justify-content: flex-start; 
+    align-items: flex-start;
+    background-color: var(--color-background);
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: 280px;
+    background-color: var(--color-white);
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.logo {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+}
+
+.logo span {
+    font-size: 0.6em;
+    font-weight: 400;
+    color: var(--color-text-light);
+    margin-left: 5px;
+}
+
+.nav-menu {
+    flex-grow: 1; /* Pushes sign-out to the bottom */
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    margin: 8px 0;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--color-text-light);
+    font-weight: 500;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.nav-item i {
+    margin-right: 15px;
+    font-size: 1.2em; /* Placeholder icons */
+}
+
+.nav-item:hover {
+    background-color: #f0f0f0;
+}
+
+.nav-item.active {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    box-shadow: 0 4px 6px rgba(25, 195, 125, 0.3);
+}
+
+.nav-item.active:hover {
+    background-color: var(--color-primary);
+}
+
+.sign-out-area {
+    padding-top: 20px;
+    border-top: 1px solid var(--color-border);
+}
+
+#sign-out-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--color-text-light);
+    padding: 10px 15px;
+    border-radius: 8px;
+}
+
+/* Content Area */
+.content-area {
+    flex-grow: 1;
+    padding: 40px 60px;
+}
+
+.content-view {
+    display: none; /* Hidden by default, JS shows the active one */
+}
+
+.content-view.active {
+    display: block;
+}
+
+/* Common Header Styles */
+.content-area h1 {
+    font-size: 2em;
+    margin-bottom: 5px;
+}
+
+.content-area > p {
+    color: var(--color-text-light);
+    margin-bottom: 30px;
+}
+
+/* --- 6. Stats Cards --- */
+
+.stats-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background-color: var(--color-white);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-light);
+}
+
+.stat-card .label {
+    display: block;
+    font-size: 0.9em;
+    color: var(--color-text-light);
+    margin-bottom: 5px;
+}
+
+.stat-card .value {
+    font-size: 1.8em;
+    font-weight: 700;
+    color: var(--color-text-dark);
+}
+
+/* Dashboard Specific Components */
+.balance-trend-chart, .recent-transactions {
+    background-color: var(--color-white);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-light);
+    margin-bottom: 40px;
+}
+
+.transactions-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Transaction List Styling */
+.transaction-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.transaction-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.transaction-item:last-child {
+    border-bottom: none;
+}
+
+.transaction-item .icon-name {
+    display: flex;
+    align-items: center;
+}
+
+.transaction-item .icon-name i {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+    margin-right: 15px;
+}
+
+.transaction-item .name {
+    display: block;
+    font-weight: 600;
+}
+
+.transaction-item .category {
+    font-size: 0.8em;
+    color: var(--color-text-light);
+}
+
+.transaction-item .amount-date {
+    text-align: right;
+}
+
+.transaction-item .amount {
+    display: block;
+    font-weight: 600;
+}
+
+.transaction-item.income .amount {
+    color: var(--color-primary);
+}
+
+.transaction-item.expense .amount {
+    color: #f00; /* Red for expense */
+}
+
+.transaction-item .date {
+    font-size: 0.8em;
+    color: var(--color-text-light);
+}
+
+/* Transactions View Controls */
+.transactions-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.search-filter-group {
+    display: flex;
+    gap: 15px;
+}
+
+.search-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-input i {
+    position: absolute;
+    left: 10px;
+    color: var(--color-text-light);
+}
+
+.search-input input, .category-select {
+    padding: 10px 15px 10px 40px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background-color: var(--color-white);
+    font-size: 1em;
+    width: 300px;
+}
+.category-select {
+    padding-left: 15px;
+    width: 200px;
+}
+
+/* Analytics View */
+.analytics-charts-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* Income vs Expense is wider */
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.chart-area {
+    background-color: var(--color-white);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-light);
+}
+
+.chart-area h2 {
+    margin-bottom: 20px;
+    font-size: 1.2em;
+}
+
+/* Settings View */
+.settings-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.settings-group {
+    background-color: var(--color-white);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-light);
+}
+
+.settings-group h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.3em;
+}
+
+.settings-group .note {
+    font-size: 0.8em;
+    color: var(--color-text-light);
+    margin-top: 5px;
+}
+
+.link-btn {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+    font-size: 1em;
+    margin-top: 10px;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+}
+.checkbox-group input[type="checkbox"] {
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+}
+
+.btn-export {
+    background-color: #19C37D; 
+}
+.btn-delete {
+    background-color: #e53935; /* Red */
+}
+.danger-zone {
+    border: 1px solid #e53935;
+    background-color: #fce4e4;
+}
+.save-settings-btn {
+    grid-column: 1 / -1; /* spans both columns */
+    width: 250px;
+    justify-self: start;
+}
+
+
+/* --- 7. Modal (Add Transaction) Styling --- */
+
+.modal-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4); 
+    padding-top: 50px;
+}
+
+.modal-overlay.show {
+    display: block;
+}
+
+.modal-content {
+    background-color: var(--color-white);
+    margin: 5% auto; /* 5% from the top and centered */
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%; 
+    max-width: 500px; /* Limits the size of the modal */
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.modal-content h2 {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+}
+
+.modal-content p {
+    color: var(--color-text-light);
+    margin-bottom: 20px;
+}
+
+.close-btn {
+    color: var(--color-text-light);
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.transaction-type-switch {
+    display: flex;
+    background-color: var(--color-input-bg);
+    border-radius: 8px;
+    padding: 4px;
+    margin-bottom: 25px;
+}
+
+.transaction-type-switch .type-btn {
+    flex: 1;
+    padding: 8px 15px;
+    border: none;
+    background-color: transparent;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.transaction-type-switch .type-btn.active {
+    background-color: var(--color-white);
+    color: var(--color-text-dark);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.receipt-upload label {
+    display: block;
+    cursor: pointer;
+    text-align: center;
+    padding: 20px;
+    border: 2px dashed var(--color-border);
+    border-radius: 8px;
+    color: var(--color-primary);
+    font-weight: 500;
+    margin-top: 10px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.modal-actions .btn {
+    width: auto;
+    padding: 10px 20px;
+}
+.btn-secondary {
+    background-color: #f0f0f0;
+    color: var(--color-text-dark);
+}
+
+/* Utility classes for placeholder icons (adjust with real icons later) */
+.icon-dashboard::before { content: '🏠'; }
+.icon-transactions::before { content: '💵'; }
+.icon-analytics::before { content: '📈'; }
+.icon-settings::before { content: '⚙️'; }
+.icon-sign-out::before { content: '➡️'; }
+.icon-search::before { content: '🔍'; }
+.icon-export::before { content: '⬇️'; }
+.icon-salary::before { content: '💼'; }
+
