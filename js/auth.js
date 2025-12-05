@@ -81,18 +81,33 @@ const signupForm = document.getElementById('signup-form');
 if (signupForm) {
     signupForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+        
+        // --- 1. Variable Declarations and Validation ---
+        const fullName = document.getElementById('full-name').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const submitButton = signupForm.querySelector('button[type="submit"]');
 
-        // ... variable declarations and validation ...
+        // Check for empty fields (You should uncomment/verify this logic)
+        if (!fullName || !email || !password) { 
+             alert('Please fill in all fields.');
+             return;
+        }
 
+        submitButton.disabled = true;
+        submitButton.textContent = 'Creating Account...';
+        
         try {
+            // 🛑 CRITICAL: CREATE USER IN FIREBASE AUTH 🛑
             const userCredential = await auth.createUserWithEmailAndPassword(email, password);
             const user = userCredential.user;
 
+            // Update user profile name
             await user.updateProfile({
                 displayName: fullName
             });
 
-            // Set initial user data in Firestore
+            // Save initial user data in Firestore
             await db.collection('users').doc(user.uid).set({
                 fullName: fullName,
                 email: email,
@@ -104,7 +119,7 @@ if (signupForm) {
                 totalBalance: 0
             });
 
-            // 🚀 FIX: Manual Redirection for guaranteed transition 🚀
+            // 🚀 SUCCESS: Manual Redirection 🚀
             alert('Account created successfully! Redirecting to dashboard.');
             window.location.href = 'dashboard.html'; 
             
