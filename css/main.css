@@ -686,3 +686,18 @@ body {
 .icon-export::before { content: '⬇️'; }
 .icon-salary::before { content: '💼'; }
 
+/* --- Styling for Delete Button --- */
+.transaction-item .btn-delete-transaction {
+    background: none;
+    border: none;
+    color: #e53935; /* Red color */
+    font-size: 1.1em;
+    cursor: pointer;
+    margin-left: 15px;
+    padding: 0 5px;
+    transition: opacity 0.2s;
+}
+
+.transaction-item .btn-delete-transaction:hover {
+    opacity: 0.7;
+}

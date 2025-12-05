@@ -4,6 +4,10 @@
 const newTransactionForm = document.getElementById('new-transaction-form');
 const transactionTypeSwitch = document.querySelector('.transaction-type-switch');
 const transactionCategorySelect = document.getElementById('transaction-category');
+// js/transactions.js (Add these variables near the top)
+const searchInput = document.getElementById('search-input');
+const categoryFilter = document.getElementById('category-filter');
+const sortSelector = document.getElementById('sort-selector');
 //const modal = document.getElementById('add-transaction-modal');
 let currentTransactionType = 'expense'; // Default type
 
@@ -135,6 +139,10 @@ newTransactionForm.addEventListener('submit', async (e) => {
 });
 
 
+// js/transactions.js (Optimized for Delete Functionality)
+
+// ... existing code (Category switch and Form Submission sections A and B) ...
+
 // --- C. Display Transactions (Loading from Firestore) ---
 
 const recentTransactionsList = document.getElementById('recent-transactions-list');
@@ -143,11 +151,8 @@ const fullTransactionsList = document.getElementById('full-transactions-list');
 // Utility function to format currency
 const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'USD', // Should eventually use user's preference from Firestore
+    currency: 'USD',
 });
-
-// Function to render a single transaction item HTML
-// js/transactions.js (Corrected createTransactionItemHTML function)
 
 // Function to render a single transaction item HTML
 function createTransactionItemHTML(transaction, isFullList = false) {
@@ -155,10 +160,17 @@ function createTransactionItemHTML(transaction, isFullList = false) {
     const amountDisplay = formatter.format(Math.abs(transaction.amount));
     
     // Format date string
-    const dateObj = transaction.date.toDate(); // Convert Firestore Timestamp to JS Date
+    const dateObj = transaction.date.toDate(); 
     const dateString = isFullList 
         ? dateObj.toLocaleDateString() 
         : dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+    // The delete button is added only to the full list for management
+    const deleteButton = isFullList ? `
+        <button class="btn-delete-transaction" data-id="${transaction.id}" title="Delete Transaction">
+            🗑️
+        </button>
+    ` : '';
 
     return `
         <div class="transaction-item ${transaction.type}">
@@ -172,12 +184,56 @@ function createTransactionItemHTML(transaction, isFullList = false) {
             <div class="amount-date">
                 <span class="amount">${isIncome ? '+' : '-'} ${amountDisplay}</span>
                 <span class="date">${dateString}</span>
+                ${deleteButton} 
             </div>
             ${transaction.receiptUrl ? `
                 <a href="${transaction.receiptUrl}" target="_blank" title="View Receipt" class="receipt-link">📎</a>
             ` : ''}
         </div>
     `;
+}
+
+// Function to handle transaction deletion
+async function deleteTransaction(transactionId) {
+    if (!confirm("Are you sure you want to permanently delete this transaction? This action cannot be undone.")) {
+        return;
+    }
+
+    const user = auth.currentUser;
+    if (!user) return;
+    
+    try {
+        // Use Firestore's delete method
+        await db.collection('transactions').doc(transactionId).delete();
+        
+        console.log(`Transaction ${transactionId} deleted successfully.`);
+        
+        // Refresh all displays
+        loadTransactions(user.uid); 
+        
+    } catch (error) {
+        console.error("Error deleting transaction: ", error);
+        alert("Failed to delete transaction. Check permissions.");
+    }
+}
+
+// Function to attach listeners to the delete buttons
+function attachDeleteListeners() {
+    // Target the full list container (where delete buttons are visible)
+    const container = document.getElementById('full-transactions-list');
+    
+    if (container) {
+        // Use event delegation on the container
+        container.addEventListener('click', (e) => {
+            const deleteBtn = e.target.closest('.btn-delete-transaction');
+            if (deleteBtn) {
+                const id = deleteBtn.getAttribute('data-id');
+                if (id) {
+                    deleteTransaction(id);
+                }
+            }
+        });
+    }
 }
 
 // Function to fetch and display transactions
@@ -204,6 +260,13 @@ async function loadTransactions(userId) {
         if (fullTransactionsList) {
             const fullHTML = transactions.map(t => createTransactionItemHTML(t, true)).join('');
             fullTransactionsList.innerHTML = fullHTML || '<p>No transactions found. Start adding one!</p>';
+            
+            // Attach listeners after rendering the full list only once (via delegation)
+            // We ensure this is only called once by checking if the delegation is already set up.
+            if (!fullTransactionsList.getAttribute('data-listeners-set')) {
+                 attachDeleteListeners();
+                 fullTransactionsList.setAttribute('data-listeners-set', 'true');
+            }
         }
 
         // 3. Update Dashboard Stats (Simple Calculation)
@@ -214,49 +277,4 @@ async function loadTransactions(userId) {
     }
 }
 
-
-// --- D. Update Dashboard Statistics ---
-
-function updateDashboardStats(transactions) {
-    const today = new Date();
-    const currentMonth = today.getMonth();
-    const currentYear = today.getFullYear();
-    
-    let totalBalance = 0;
-    let monthlyIncome = 0;
-    let monthlyExpense = 0;
-
-    transactions.forEach(t => {
-        // Calculate total balance
-        totalBalance += t.amount;
-
-        // Check if transaction is in the current month
-        const tDate = t.date.toDate();
-        if (tDate.getMonth() === currentMonth && tDate.getFullYear() === currentYear) {
-            if (t.type === 'income') {
-                monthlyIncome += t.amount; // amount is positive here
-            } else {
-                monthlyExpense += Math.abs(t.amount); // amount is negative, use absolute
-            }
-        }
-    });
-
-    // Update the DOM elements
-    document.getElementById('total-balance').textContent = formatter.format(totalBalance);
-    document.getElementById('monthly-income').textContent = formatter.format(monthlyIncome);
-    document.getElementById('monthly-expense').textContent = formatter.format(monthlyExpense);
-    
-    // Optional: Update the user document balance (better to calculate live, but useful for quick access)
-    // auth.currentUser && db.collection('users').doc(auth.currentUser.uid).update({ totalBalance: totalBalance });
-}
-
-
-// --- E. Initial Data Load on Auth Change ---
-
-// Listen to auth state to trigger the initial transaction load once the user is ready
-auth.onAuthStateChanged(user => {
-    if (user) {
-        // When user logs in, load their data
-        loadTransactions(user.uid);
-    }
-});
+// ... rest of the file (updateDashboardStats and Initial Data Load) ...

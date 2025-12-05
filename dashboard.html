@@ -6,6 +6,7 @@
     <title>Finance Tracker - Dashboard</title>
     
     <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -25,20 +26,20 @@
                 <span>Personal Tracker</span>
             </div>
 
-            <nav class="nav-menu">
-                <a href="#" class="nav-item active" data-view="dashboard">
-                    <i class="icon-dashboard"></i> Dashboard
-                </a>
-                <a href="#" class="nav-item" data-view="transactions">
-                    <i class="icon-transactions"></i> Transactions
-                </a>
-                <a href="#" class="nav-item" data-view="analytics">
-                    <i class="icon-analytics"></i> Analytics
-                </a>
-                <a href="#" class="nav-item" data-view="settings">
-                    <i class="icon-settings"></i> Settings
-                </a>
-            </nav>
+          <nav class="nav-menu">
+             <a href="#" class="nav-item active" data-view="dashboard">
+                 <i class="fas fa-home"></i> Dashboard
+             </a>
+             <a href="#" class="nav-item" data-view="transactions">
+                <i class="fas fa-exchange-alt"></i> Transactions
+             </a>
+             <a href="#" class="nav-item" data-view="analytics">
+                <i class="fas fa-chart-line"></i> Analytics
+             </a>
+             <a href="#" class="nav-item" data-view="settings">
+                <i class="fas fa-cog"></i> Settings
+            </a>
+         </nav>
 
             <div class="sign-out-area">
                 <a href="#" id="sign-out-link">
@@ -73,25 +74,26 @@
                     <canvas id="balanceTrendChart"></canvas>
                 </div>
 
-                <div class="recent-transactions">
-                    <div class="transactions-header">
-                        <h2>Recent Transactions</h2>
-                        <button class="btn btn-primary" id="add-transaction-btn-dash">
-                            + Add Transaction
-                        </button>
-                    </div>
-                    <div id="recent-transactions-list" class="transaction-list">
-                        <div class="transaction-item income">
-                            <div class="icon-name">
-                                <i class="icon-salary"></i>
-                                <div><span class="name">Monthly Salary</span><span class="category">Salary</span></div>
-                            </div>
-                            <div class="amount-date">
-                                <span class="amount">+ $5,000.00</span>
-                                <span class="date">Nov 29</span>
-                            </div>
+                <<div class="transactions-controls">
+                    <div class="search-filter-group">
+                        <div class="search-input">
+                         <i class="icon-search"></i>
+                         <input type="text" id="search-input" placeholder="Search transactions...">
                         </div>
-                    </div>
+        
+                         <select id="category-filter" class="category-select">
+                         <option value="all">All Categories</option>
+                         </select>
+        
+                         <select id="sort-selector" class="category-select">
+                             <option value="date-desc">Date (Newest First)</option>
+                             <option value="date-asc">Date (Oldest First)</option>
+                             <option value="amount-desc">Amount (Highest First)</option>
+                             <option value="amount-asc">Amount (Lowest First)</option>
+                         </select>
+
+                     </div>
+                        <button class="btn btn-primary" id="add-transaction-btn-full">+ Add Transaction</button>
                 </div>
             </section>
 
@@ -217,11 +219,11 @@
                         </div>
                     </div>
 
-                    <div class="settings-group danger-zone">
-                        <h2>Danger Zone</h2>
-                        <button type="button" class="btn btn-delete">Delete Account</button>
-                        <p class="note">These actions cannot be undone. Please proceed with caution.</p>
-                    </div>
+            <div class="settings-group danger-zone">
+                 <h2>Danger Zone</h2>
+                <button type="button" class="btn btn-delete" id="delete-account-btn">Delete Account</button>
+                <p class="note">These actions cannot be undone. Please proceed with caution.</p>
+            </div>
                     
                     <button type="submit" class="btn btn-primary save-settings-btn">Save Settings</button>
                 </form>

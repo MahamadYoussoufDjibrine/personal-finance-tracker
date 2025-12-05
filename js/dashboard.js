@@ -265,7 +265,69 @@ if (changePasswordBtn) {
     });
 }
 
+// js/dashboard.js (Append this logic)
 
+const deleteAccountBtn = document.getElementById('delete-account-btn');
+
+if (deleteAccountBtn) {
+    deleteAccountBtn.addEventListener('click', async () => {
+        const user = auth.currentUser;
+        if (!user) {
+            alert("You must be logged in to delete your account.");
+            return;
+        }
+
+        const confirmation = prompt("To confirm account deletion, please type 'DELETE' below:");
+        if (confirmation !== 'DELETE') {
+            alert("Deletion cancelled or confirmation incorrect.");
+            return;
+        }
+
+        const password = prompt("Please enter your password to re-authenticate and confirm deletion:");
+        if (!password) return;
+
+        try {
+            // 1. Re-authenticate the user (MANDATORY for Firebase deletion)
+            const credential = firebase.auth.EmailAuthProvider.credential(user.email, password);
+            await user.reauthenticateWithCredential(credential);
+
+            // 2. Delete ALL associated data from Firestore (Transactions)
+            const transactionsSnapshot = await db.collection('transactions')
+                .where('userId', '==', user.uid)
+                .get();
+
+            const batch = db.batch(); // Use a batch for efficiency
+            transactionsSnapshot.docs.forEach(doc => {
+                batch.delete(doc.ref);
+            });
+            batch.delete(db.collection('users').doc(user.uid)); // Delete the user profile document
+            await batch.commit();
+
+            // 3. Delete receipts from Storage (Optional but recommended)
+            // NOTE: Deleting the entire folder requires Cloud Functions for larger apps,
+            // but for simple apps, deleting the bucket reference is usually sufficient, 
+            // or deleting files one by one (simplified here).
+            
+            // 4. Delete the User Account
+            await user.delete();
+
+            alert("Account and all associated data deleted successfully. Redirecting to sign-up.");
+            window.location.href = 'signup.html';
+
+        } catch (error) {
+            console.error("Account Deletion Error:", error);
+            let errorMessage = "Deletion failed. ";
+            if (error.code === 'auth/wrong-password' || error.code === 'auth/user-mismatch') {
+                errorMessage += "Incorrect password provided.";
+            } else if (error.code === 'auth/requires-recent-login') {
+                 errorMessage += "Please log out and log back in, then immediately try deleting the account.";
+            } else {
+                 errorMessage += error.message;
+            }
+            alert(errorMessage);
+        }
+    });
+}
 // --- 6. Integrate Settings Load into Auth Listener ---
 
 // Find the existing auth.onAuthStateChanged listener and modify it 

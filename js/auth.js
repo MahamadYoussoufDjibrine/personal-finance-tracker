@@ -28,7 +28,7 @@ auth.onAuthStateChanged(user => {
 });
 
 
-// --- B. Handle Email/Password Login ---
+// js/auth.js (Inside Section B - Handle Email/Password Login)
 
 const loginForm = document.getElementById('login-form');
 
@@ -47,13 +47,20 @@ if (loginForm) {
             // Firebase Login
             await auth.signInWithEmailAndPassword(email, password);
 
-            // Redirection will happen automatically via the onAuthStateChanged listener above
+            // 🚀 CRITICAL FIX: Add the manual redirect for guaranteed transition 🚀
+            submitButton.textContent = 'Success! Redirecting...';
+            window.location.href = 'dashboard.html';
             
         } catch (error) {
             console.error('Login Error:', error.code, error.message);
             
             let errorMessage = 'Login failed. Please check your email and password.';
             
+            // You can refine this error handling based on specific Firebase codes if needed
+            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                errorMessage = 'Invalid email or password.';
+            }
+
             alert(`Error: ${errorMessage}`);
             
             submitButton.disabled = false;
@@ -67,22 +74,15 @@ if (loginForm) {
 
 const signupForm = document.getElementById('signup-form');
 
+// js/auth.js (Inside Section C - Handle Email/Password Sign Up)
+
+// ... existing code (const signupForm = document.getElementById('signup-form'); etc.) ...
+
 if (signupForm) {
     signupForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const fullName = document.getElementById('full-name').value;
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        const submitButton = signupForm.querySelector('button[type="submit"]');
-
-        if (!fullName || !email || !password) {
-            alert('Please fill in all fields.');
-            return;
-        }
-
-        submitButton.disabled = true;
-        submitButton.textContent = 'Creating Account...';
+        // ... variable declarations and validation ...
 
         try {
             const userCredential = await auth.createUserWithEmailAndPassword(email, password);
@@ -104,8 +104,10 @@ if (signupForm) {
                 totalBalance: 0
             });
 
-            // Redirection will happen automatically via the onAuthStateChanged listener above
-
+            // 🚀 FIX: Manual Redirection for guaranteed transition 🚀
+            alert('Account created successfully! Redirecting to dashboard.');
+            window.location.href = 'dashboard.html'; 
+            
         } catch (error) {
             console.error('Sign Up Error:', error.code, error.message);
             
