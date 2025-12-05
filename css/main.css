@@ -1,5 +1,51 @@
 /* css/main.css */
+/* css/main.css (Append this to the end of your file) */
 
+/* --- RESPONSIVE BREAKPOINT: Tablet and Smaller (Max-width 992px) --- */
+@media (max-width: 992px) {
+    /* Auth Layout (Login/Signup) */
+    .auth-container {
+        flex-direction: column; /* Stack the Pitch and Form sections */
+        max-width: 600px;
+        width: 95%;
+    }
+
+    .auth-pitch {
+        padding: 40px;
+        text-align: center;
+        border-bottom: 1px solid var(--color-border);
+    }
+    .auth-pitch .logo-area {
+        margin: 0 auto 20px auto; /* Center logo area */
+    }
+    .auth-pitch ul {
+        text-align: left; /* Keep list left-aligned */
+        padding-left: 20px;
+    }
+
+    .auth-form-area {
+        max-width: 100%;
+        padding: 40px;
+        border-left: none; /* Remove vertical separator */
+    }
+    .auth-tabs {
+        justify-content: center; /* Center the Sign In/Create Account tabs */
+    }
+}
+
+/* --- RESPONSIVE BREAKPOINT: Mobile Phones (Max-width 576px) --- */
+@media (max-width: 576px) {
+    .auth-container {
+        box-shadow: none; /* Remove shadow for full screen mobile look */
+        border-radius: 0;
+    }
+    .auth-pitch, .auth-form-area {
+        padding: 20px;
+    }
+    .auth-pitch h1 {
+        font-size: 1.5em;
+    }
+}
 /* --- 1. Global Resets and Variables --- */
 :root {
     --color-primary: #19C37D; /* Green */
@@ -701,3 +747,4 @@ body {
 .transaction-item .btn-delete-transaction:hover {
     opacity: 0.7;
 }
+
