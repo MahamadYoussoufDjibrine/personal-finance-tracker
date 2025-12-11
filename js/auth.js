@@ -1,28 +1,21 @@
-// js/auth.js
-
-// --- A. Authentication State Listener ---
-// This runs every time the user's login state changes (login, logout, page load)
+// js/auth.js (Section A)
 
 auth.onAuthStateChanged(user => {
-    // Get the current path (e.g., /index.html, /dashboard.html)
     const path = window.location.pathname;
     
-    // Check if the user is logged in
     if (user) {
         // User is signed in.
-        console.log("Auth state changed: User is now signed in.");
-
+        // ...
         // If the user is on a public page (login/signup), redirect them to the dashboard
         if (path.includes('index.html') || path.includes('signup.html')) {
             window.location.href = 'dashboard.html';
         }
     } else {
         // User is signed out.
-        console.log("Auth state changed: User is now signed out.");
-        
+        // ...
         // If the user is on a restricted page (dashboard), redirect them to the login page
         if (path.includes('dashboard.html')) {
-            window.location.href = 'index.html';
+            window.location.href = 'index.html'; // This is the crucial line for protection
         }
     }
 });
@@ -142,6 +135,7 @@ if (signupForm) {
 }
 
 // --- D. Sign Out Function (Used on the dashboard page) ---
+// --- D. Sign Out Function (Used on the dashboard page) ---
 
 const signOutButton = document.getElementById('sign-out-link');
 
@@ -150,8 +144,11 @@ if (signOutButton) {
         e.preventDefault(); 
         try {
             await auth.signOut();
-            // The listener (Section A) will detect the sign out and redirect to index.html
-            console.log("Successfully called auth.signOut()");
+            
+            // ⭐ CRITICAL FIX: Explicitly redirect immediately after sign out
+            window.location.href = 'index.html'; 
+
+            console.log("Successfully called auth.signOut() and redirecting.");
         } catch (error) {
             console.error('Sign Out Error:', error);
             alert('Error signing out. Please try again.');

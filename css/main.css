@@ -31,10 +31,87 @@
     .auth-tabs {
         justify-content: center; /* Center the Sign In/Create Account tabs */
     }
+
+    /* Dashboard Mobile Responsiveness (Issue #2) */
+    .app-container {
+        display: block; /* Stack sidebar and content */
+        overflow-x: hidden;
+    }
+    
+    .sidebar {
+        position: fixed; /* Sidebar is fixed and hidden off-screen */
+        top: 0;
+        left: -280px; /* Hide completely off-screen */
+        height: 100vh;
+        z-index: 10;
+        transition: left 0.3s ease-in-out;
+    }
+    
+    /* When sidebar-open is toggled, bring the sidebar into view */
+    .app-container.sidebar-open .sidebar {
+        left: 0;
+    }
+
+    .content-area {
+        padding: 20px;
+        margin-left: 0;
+    }
+    
+    .menu-toggle-btn {
+        display: block; /* Show the menu button on mobile */
+        position: sticky;
+        top: 10px;
+        z-index: 5;
+        background: var(--color-primary);
+        color: var(--color-white);
+        padding: 10px 15px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.2em;
+        margin-bottom: 20px;
+        cursor: pointer;
+    }
+
+    /* Dashboard Grid Adjustments */
+    .stats-cards {
+        grid-template-columns: 1fr; /* Stack stats cards */
+    }
+    .analytics-charts-grid {
+        grid-template-columns: 1fr; /* Stack charts */
+        gap: 20px;
+    }
+    .transactions-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .search-filter-group {
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+    .search-input input, .category-select {
+        width: 100%;
+    }
+    .settings-form-grid {
+        grid-template-columns: 1fr; /* Stack settings groups */
+    }
+    .save-settings-btn {
+        grid-column: 1 / 2;
+        width: 100%;
+    }
+    
+    /* Categories Grid (Issue #1) */
+    .category-manager-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* --- RESPONSIVE BREAKPOINT: Mobile Phones (Max-width 576px) --- */
 @media (max-width: 576px) {
+    body {
+        /* Reset body display for app view on smallest screens */
+        align-items: flex-start;
+    }
     .auth-container {
         box-shadow: none; /* Remove shadow for full screen mobile look */
         border-radius: 0;
@@ -44,6 +121,9 @@
     }
     .auth-pitch h1 {
         font-size: 1.5em;
+    }
+    .content-area {
+        padding: 15px;
     }
 }
 /* --- 1. Global Resets and Variables --- */
@@ -197,7 +277,7 @@ body {
     color: var(--color-text-light);
 }
 
-.input-group input {
+.input-group input, .input-group select {
     width: 100%;
     padding: 12px 15px;
     border: 1px solid var(--color-border);
@@ -207,7 +287,7 @@ body {
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.input-group input:focus {
+.input-group input:focus, .input-group select:focus {
     border-color: var(--color-primary);
     background-color: var(--color-white);
     outline: none;
@@ -371,6 +451,12 @@ body {
     flex-grow: 1;
     padding: 40px 60px;
 }
+
+/* Hide the toggle button by default on desktop (Issue #2) */
+.menu-toggle-btn {
+    display: none; 
+}
+
 
 .content-view {
     display: none; /* Hidden by default, JS shows the active one */
@@ -748,3 +834,74 @@ body {
     opacity: 0.7;
 }
 
+/* --- 9. Categories View Styles (Issue #1) --- */
+
+.category-manager-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr; /* Form on left, list on right */
+    gap: 30px;
+}
+
+.category-form-area {
+    background-color: var(--color-white);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-light);
+    height: fit-content;
+}
+
+.category-list-area {
+    background-color: var(--color-white);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-light);
+}
+
+.category-list-area h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+}
+
+.category-list h3 {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    margin-top: 20px;
+    color: var(--color-primary);
+    font-size: 1.1em;
+}
+
+.category-list h3:first-child {
+    margin-top: 0;
+}
+
+.category-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.category-item span {
+    flex-grow: 1;
+}
+
+.btn-delete-category {
+    background: none;
+    border: none;
+    color: #e53935;
+    font-size: 1.4em;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    line-height: 1;
+}
+
+.btn-delete-category:hover {
+    opacity: 1;
+}

@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <title>Finance Tracker - Dashboard</title>
+    <link rel="icon" type="image/png" href="/favicon.png"> 
+    
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
@@ -18,6 +23,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+    
     <div class="app-container">
         
         <aside class="sidebar">
@@ -33,6 +39,9 @@
              </a>
              <a href="#" class="nav-item" data-view="transactions">
                 <i class="fas fa-exchange-alt"></i> Transactions
+             </a>
+             <a href="#" class="nav-item" data-view="categories">
+                <i class="fas fa-tags"></i> Categories
              </a>
              <a href="#" class="nav-item" data-view="analytics">
                 <i class="fas fa-chart-line"></i> Analytics
@@ -50,7 +59,9 @@
         </aside>
 
         <main class="content-area">
-            
+            <button class="menu-toggle-btn" id="menu-toggle-btn">
+                <i class="fas fa-bars"></i>
+            </button>
             <section id="dashboard-view" class="content-view active">
                 <h1 id="welcome-message">Welcome back, clever!</h1>
                 <p>Here's your financial overview for this month</p>
@@ -75,7 +86,7 @@
                     <canvas id="balanceTrendChart"></canvas>
                 </div>
 
-                <<div class="transactions-controls">
+                <div class="transactions-controls">
                     <div class="search-filter-group">
                         <div class="search-input">
                          <i class="icon-search"></i>
@@ -119,6 +130,40 @@
                     </div>
             </section>
             
+            <section id="categories-view" class="content-view">
+                <h1>Categories</h1>
+                <p>Manage your custom income and expense categories.</p>
+
+                <div class="category-manager-grid">
+                    <div class="category-form-area">
+                        <h2>Add New Category</h2>
+                        <form id="add-category-form">
+                            <div class="input-group">
+                                <label for="category-name">Category Name *</label>
+                                <input type="text" id="category-name" placeholder="e.g., Groceries, Rent..." required>
+                            </div>
+                            <div class="input-group">
+                                <label for="category-type">Type *</label>
+                                <select id="category-type" required>
+                                    <option value="expense">Expense</option>
+                                    <option value="income">Income</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Category</button>
+                        </form>
+                    </div>
+                    
+                    <div class="category-list-area">
+                        <h2>Your Categories</h2>
+                        <div id="category-list-expense" class="category-list">
+                            <h3>Expense Categories</h3>
+                            </div>
+                        <div id="category-list-income" class="category-list">
+                            <h3>Income Categories</h3>
+                            </div>
+                    </div>
+                </div>
+            </section>
             <section id="analytics-view" class="content-view">
                 <h1>Analytics</h1>
                 <p>Visualize your spending patterns and financial insights</p>

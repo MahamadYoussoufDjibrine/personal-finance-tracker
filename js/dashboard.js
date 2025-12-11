@@ -328,6 +328,7 @@ if (deleteAccountBtn) {
         }
     });
 }
+
 // --- 6. Integrate Settings Load into Auth Listener ---
 
 // Find the existing auth.onAuthStateChanged listener and modify it 
@@ -341,8 +342,166 @@ auth.onAuthStateChanged(async (user) => {
         if (settingsForm) {
             loadSettings(user);
         }
+        
+        // **NEW INTEGRATION:** Load categories when the user is available (Issue #1)
+        loadCategories(user.uid);
+
 
     } else {
         // ... (Existing logout logic) ...
     }
 });
+
+
+// --- 7. Category Management Logic (Issue #1) ---
+
+const addCategoryForm = document.getElementById('add-category-form');
+const categoryListExpense = document.getElementById('category-list-expense');
+const categoryListIncome = document.getElementById('category-list-income');
+
+// Function to fetch and render user-defined categories
+async function loadCategories(userId) {
+    if (!userId) return;
+
+    try {
+        // Fetch custom categories for the user
+        const snapshot = await db.collection('users').doc(userId).collection('categories')
+            .orderBy('name', 'asc')
+            .get();
+        
+        const categoriesData = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
+        let expenseHTML = '';
+        let incomeHTML = '';
+
+        categoriesData.forEach(cat => {
+            const html = `
+                <div class="category-item">
+                    <span>${cat.name}</span>
+                    <button class="btn-delete-category" data-id="${cat.id}" title="Delete Category">
+                        &times;
+                    </button>
+                </div>
+            `;
+            if (cat.type === 'expense') {
+                expenseHTML += html;
+            } else {
+                incomeHTML += html;
+            }
+        });
+
+        // Update the DOM
+        if (categoryListExpense) {
+            categoryListExpense.innerHTML = `<h3>Expense Categories</h3>${expenseHTML || '<p>No custom expense categories.</p>'}`;
+        }
+        if (categoryListIncome) {
+            categoryListIncome.innerHTML = `<h3>Income Categories</h3>${incomeHTML || '<p>No custom income categories.</p>'}`;
+        }
+        
+        // Note: To make these categories appear in the transaction modal, 
+        // you would need to implement a function in transactions.js to update its category map 
+        // and call it here.
+        
+
+    } catch (error) {
+        console.error("Error loading categories:", error);
+    }
+}
+
+// Function to delete a category
+async function deleteCategory(categoryId) {
+    const user = auth.currentUser;
+    if (!user) return;
+    
+    if (!confirm("Are you sure you want to delete this category?")) return;
+
+    try {
+        await db.collection('users').doc(user.uid).collection('categories').doc(categoryId).delete();
+        alert('Category deleted successfully.');
+        loadCategories(user.uid); // Refresh the list
+    } catch (error) {
+        console.error("Error deleting category:", error);
+        alert('Failed to delete category. Check console for details.');
+    }
+}
+
+// Attach event listener for the form submission
+if (addCategoryForm) {
+    addCategoryForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const user = auth.currentUser;
+        if (!user) return;
+
+        const categoryName = document.getElementById('category-name').value.trim();
+        const categoryType = document.getElementById('category-type').value;
+
+        if (!categoryName) return;
+
+        const submitButton = addCategoryForm.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        submitButton.textContent = 'Adding...';
+
+        try {
+            // Save the category to a subcollection under the user's document
+            await db.collection('users').doc(user.uid).collection('categories').add({
+                name: categoryName,
+                type: categoryType,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            addCategoryForm.reset();
+            loadCategories(user.uid);
+            alert('Category added!');
+
+        } catch (error) {
+            console.error("Error adding category:", error);
+            alert(`Failed to add category. Error: ${error.message}`);
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = 'Add Category';
+        }
+    });
+}
+
+// Attach event delegation for delete buttons
+const categoryListContainer = document.querySelector('.category-list-area'); 
+if (categoryListContainer) {
+    categoryListContainer.addEventListener('click', (e) => {
+        const deleteBtn = e.target.closest('.btn-delete-category');
+        if (deleteBtn) {
+            const id = deleteBtn.getAttribute('data-id');
+            if (id) {
+                deleteCategory(id);
+            }
+        }
+    });
+}
+
+
+// --- 8. Mobile Sidebar Toggle Logic (Issue #2) ---
+const menuToggleBtn = document.getElementById('menu-toggle-btn');
+const appContainer = document.querySelector('.app-container');
+const sidebar = document.querySelector('.sidebar');
+
+if (menuToggleBtn && appContainer) {
+    menuToggleBtn.addEventListener('click', () => {
+        // Toggle a class to make the sidebar visible/hidden and push content aside
+        appContainer.classList.toggle('sidebar-open');
+    });
+
+    // Optionally close the sidebar when a nav item is clicked on mobile
+    if (sidebar) {
+        sidebar.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                // Check for a smaller screen size (assumes mobile breakpoint)
+                if (window.innerWidth < 992) { 
+                    appContainer.classList.remove('sidebar-open');
+                }
+            });
+        });
+    }
+}
